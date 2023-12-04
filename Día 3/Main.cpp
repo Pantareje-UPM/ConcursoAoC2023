@@ -266,7 +266,7 @@ int main()
     }
 
     std::cout << "Primera parte: " << First() << std::endl;
-    std::cout << "Primera parte: " << Second() << std::endl;
+    std::cout << "Segunda parte: " << Second() << std::endl;
 
     const auto elapsed = high_resolution_clock::now() - start;
     std::clog << "Duración total: " << duration_cast<milliseconds>(elapsed) << std::endl;
