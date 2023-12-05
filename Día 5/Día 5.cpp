@@ -3,6 +3,7 @@
 #include <array>
 #include <set>
 #include <cassert>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -219,36 +220,48 @@ uint32_t Second(const Almanac& almanac)
 
 int main()
 {
-    std::ifstream input("input", std::ios::binary);
+    using std::chrono::duration_cast;
+    using std::chrono::milliseconds;
+    using std::chrono::high_resolution_clock;
+
+    const auto start = high_resolution_clock::now();
+
 
     Almanac almanac;
 
-    input.ignore(7);
-    while (std::isdigit(input.peek()))
     {
-        uint32_t seedStart, seedLength;
-        input >> seedStart >> seedLength >> std::ws;
+        std::ifstream input("input", std::ios::binary);
 
-        almanac.seeds.emplace_back(seedStart);
-        almanac.seeds.emplace_back(seedLength);
-
-        almanac.seedRanges.emplace_back(seedStart, seedLength);
-    }
-
-    std::ranges::make_heap(almanac.seeds, std::greater{});
-    std::ranges::make_heap(almanac.seedRanges, std::greater{});
-
-    for (auto& map : almanac.maps)
-    {
-        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        input.ignore(7);
         while (std::isdigit(input.peek()))
         {
-            uint32_t toStart, fromStart, length;
-            input >> toStart >> fromStart >> length >> std::ws;
-            map.emplace(toStart, fromStart, length);
+            uint32_t seedStart, seedLength;
+            input >> seedStart >> seedLength >> std::ws;
+
+            almanac.seeds.emplace_back(seedStart);
+            almanac.seeds.emplace_back(seedLength);
+
+            almanac.seedRanges.emplace_back(seedStart, seedLength);
+        }
+
+        std::ranges::make_heap(almanac.seeds, std::greater{});
+        std::ranges::make_heap(almanac.seedRanges, std::greater{});
+
+        for (auto& map : almanac.maps)
+        {
+            input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            while (std::isdigit(input.peek()))
+            {
+                uint32_t toStart, fromStart, length;
+                input >> toStart >> fromStart >> length >> std::ws;
+                map.emplace(toStart, fromStart, length);
+            }
         }
     }
 
-    std::cout << First(almanac) << std::endl;
-    std::cout << Second(almanac) << std::endl;
+    std::cout << "Primera parte: " << First(almanac) << std::endl;
+    std::cout << "Segunda parte: " << Second(almanac) << std::endl;
+
+    const auto elapsed = high_resolution_clock::now() - start;
+    std::clog << "Duración total: " << duration_cast<milliseconds>(elapsed) << std::endl;
 }
