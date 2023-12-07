@@ -18,11 +18,11 @@ uint32_t First(const std::array<Record, 4>& records)
         const auto b = static_cast<float>(duration);
         const auto c = -static_cast<float>(distance);
 
-        const float discriminant = b * b + 4 * c;
-        assert(discriminant > 0);
+        assert(b * b + 4 * c > 0);
+        const float sqrtDiscriminant = std::sqrt(b * b + 4 * c);
 
-        const float fRootA = (-b + sqrt(discriminant)) * -0.5f;
-        const float fRootB = (-b +- sqrt(discriminant)) * -0.5f;
+        const float fRootA = (b - sqrtDiscriminant) * 0.5f;
+        const float fRootB = (b + sqrtDiscriminant) * 0.5f;
 
         assert(fRootA > 0);
         assert(fRootB > fRootA);
