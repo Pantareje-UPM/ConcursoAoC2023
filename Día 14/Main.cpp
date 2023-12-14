@@ -203,8 +203,7 @@ int main()
 
         for (size_t i = 0; i < DISH_SIZE; i++)
         {
-            for (size_t j = 0; j < DISH_SIZE; j++)
-                dish[i][j] = static_cast<Tile>(input.get());
+            input.read(reinterpret_cast<char*>(dish[i].data()), DISH_SIZE);
             input.ignore();
         }
     }
